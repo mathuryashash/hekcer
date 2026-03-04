@@ -1,0 +1,8 @@
+- Scaffolded Next.js project structure (package.json, config files).
+- Created Tailwind CSS styling & cyberpunk theme configuration.
+- Built reusable UI components (LevelHeader, LevelSelector, ChatLog, TerminalInput).
+- Implemented core pages (`app/layout.js`, `app/page.js`).
+- Developed FastAPI backend with all 5 levels logic (`api/index.py`).
+- Added configuration files for Vercel deployment.
+----------
+ralph-done-epuuw

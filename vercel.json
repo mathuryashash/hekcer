@@ -1,0 +1,14 @@
+{
+    "functions": {
+        "api/index.py": {
+            "maxDuration": 15
+        }
+    },
+    "regions": [
+        "iad1",
+        "sfo1"
+    ],
+    "env": {
+        "PYTHON_VERSION": "3.11"
+    }
+}

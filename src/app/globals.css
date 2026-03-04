@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vault-bg: #0a0a0f;
+  --vault-surface: #12121a;
+  --vault-border: #1e1e2e;
+  --vault-accent: #00ff88;
+  --vault-accent-dim: #00cc6a;
+  --vault-danger: #ff3366;
+  --vault-warning: #ffaa00;
+  --vault-text: #e0e0e0;
+  --vault-text-dim: #888899;
+  --vault-purple: #9966ff;
+  --vault-cyan: #00ddff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--vault-bg);
+  color: var(--vault-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vault-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vault-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vault-text-dim);
+}
+
+/* Terminal Scan Line Effect */
+.scan-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--vault-accent), transparent);
+  opacity: 0.15;
+  animation: scanLine 4s linear infinite;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* CRT Screen Effect */
+.crt-effect::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px);
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* Glowing Text */
+.glow-text {
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.glow-text-danger {
+  text-shadow: 0 0 10px rgba(255, 51, 102, 0.5), 0 0 20px rgba(255, 51, 102, 0.3);
+}
+
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.5), 0 0 20px rgba(0, 221, 255, 0.3);
+}
+
+/* Glowing Border */
+.glow-border {
+  box-shadow: 0 0 5px rgba(0, 255, 136, 0.2), inset 0 0 5px rgba(0, 255, 136, 0.05);
+}
+
+.glow-border:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4), inset 0 0 10px rgba(0, 255, 136, 0.1);
+}
+
+/* Terminal Input Styling */
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--vault-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  width: 100%;
+  caret-color: var(--vault-accent);
+}
+
+.terminal-input::placeholder {
+  color: var(--vault-text-dim);
+  opacity: 0.5;
+}
+
+/* Typing cursor blink */
+.cursor-blink::after {
+  content: '█';
+  animation: typeCursor 1s step-end infinite;
+  color: var(--vault-accent);
+}
+
+/* Message animations */
+.message-enter {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* Level progress bar */
+.level-progress {
+  background: linear-gradient(90deg, var(--vault-accent), var(--vault-cyan));
+  transition: width 0.5s ease-out;
+}
+
+/* Button hover effects */
+.btn-vault {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-vault::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(0, 255, 136, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-vault:hover::before {
+  width: 300%;
+  height: 300%;
+}
+
+/* Matrix-style background rain */
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+}
+
+/* Level cards */
+.level-card {
+  background: var(--vault-surface);
+  border: 1px solid var(--vault-border);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.level-card:hover {
+  border-color: var(--vault-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 136, 0.1);
+}
+
+.level-card.completed {
+  border-color: var(--vault-accent);
+  background: linear-gradient(135deg, var(--vault-surface), rgba(0, 255, 136, 0.05));
+}
+
+.level-card.active {
+  border-color: var(--vault-warning);
+  box-shadow: 0 0 15px rgba(255, 170, 0, 0.2);
+}
+
+.level-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Success flash animation */
+@keyframes successFlash {
+  0% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: rgba(0, 255, 136, 0.1);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.success-flash {
+  animation: successFlash 1s ease-out;
+}
+
+/* Fail shake animation */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.error-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Noise texture overlay */
+.noise-overlay {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background: transparent url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E") repeat;
+  pointer-events: none;
+  z-index: 98;
+  opacity: 0.4;
+}
