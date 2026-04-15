@@ -2,3 +2,15 @@ node_modules
 .env.local 
 .next/  
 .vercel
+__pycache__/
+*.pyc
+.planning/
+.vscode/
+.claude/
+.qodo/
+.pytest_cache/
+.ruff_cache/
+*.png
+*.jpg
+*.jpeg
+*.gif
