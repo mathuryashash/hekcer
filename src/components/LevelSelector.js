@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { LEVELS } from '@/lib/levels';
 import {
     Building2,
@@ -12,6 +13,7 @@ import {
     Sparkles,
     UserRound
 } from 'lucide-react';
+import { useMemo } from 'react';
 
 const ICON_MAP = {
     UserRound,
@@ -22,20 +24,37 @@ const ICON_MAP = {
 };
 
 export default function LevelSelector({ currentLevel, completedLevels, onSelectLevel }) {
+    const progressPercent = useMemo(() => (completedLevels.length / 5) * 100, [completedLevels.length]);
+    const isAllCompleted = useMemo(() => completedLevels.length === 5, [completedLevels.length]);
+    const maxCompleted = useMemo(() => Math.max(...completedLevels, 0), [completedLevels]);
+
+    const handleSelectLevel = useMemo(() => (levelId) => {
+        if (levelId <= maxCompleted + 1) {
+            onSelectLevel(levelId);
+        }
+    }, [maxCompleted, onSelectLevel]);
+
     return (
-        <div className="space-y-2">
+        <div className="space-y-2" role="navigation" aria-label="Level selection">
             <div className="px-2 py-1">
-                <h3 className="text-xs font-mono text-vault-text-dim uppercase tracking-widest mb-3">
+                <h3 className="text-xs font-mono text-vault-text-dim uppercase tracking-widest mb-3" id="clearance-heading">
                     Security Clearance
                 </h3>
                 {/* Progress bar */}
-                <div className="w-full h-1.5 bg-vault-border rounded-full overflow-hidden mb-4">
+                <div 
+                    className="w-full h-1.5 bg-vault-border rounded-full overflow-hidden mb-4" 
+                    role="progressbar" 
+                    aria-valuenow={completedLevels.length} 
+                    aria-valuemin="0" 
+                    aria-valuemax="5"
+                    aria-label="Progress: levels completed"
+                >
                     <div
                         className="level-progress h-full rounded-full transition-all duration-700 ease-out"
-                        style={{ width: `${(completedLevels.length / 5) * 100}%` }}
+                        style={{ width: `${progressPercent}%` }}
                     />
                 </div>
-                <p className="text-xs text-vault-text-dim font-mono mb-4">
+                <p className="text-xs text-vault-text-dim font-mono mb-4" aria-live="polite">
                     {completedLevels.length}/5 Levels Breached
                 </p>
             </div>
@@ -43,13 +62,13 @@ export default function LevelSelector({ currentLevel, completedLevels, onSelectL
             {LEVELS.map((level) => {
                 const isCompleted = completedLevels.includes(level.id);
                 const isActive = currentLevel === level.id;
-                const isLocked = level.id > Math.max(...completedLevels, 0) + 1;
+                const isLocked = level.id > maxCompleted + 1;
                 const IconComponent = ICON_MAP[level.icon] || Lock;
 
                 return (
                     <button
                         key={level.id}
-                        onClick={() => !isLocked && onSelectLevel(level.id)}
+                        onClick={() => handleSelectLevel(level.id)}
                         disabled={isLocked}
                         className={`
               w-full text-left p-3 rounded-lg transition-all duration-200
@@ -63,20 +82,22 @@ export default function LevelSelector({ currentLevel, completedLevels, onSelectL
                                         : 'border-vault-border bg-vault-surface hover:border-vault-border hover:bg-vault-surface/80'
                             }
             `}
+                        aria-label={`${level.name}, ${level.difficulty}${isCompleted ? ', completed' : ''}${isLocked ? ', locked' : isActive ? ', current level' : ''}`}
+                        aria-pressed={isActive}
                     >
-                        <div className="flex items-center gap-3">
+<div className="flex items-center gap-3">
                             {/* Level icon */}
                             <div className={`
                 w-8 h-8 rounded-md flex items-center justify-center shrink-0
                 ${isCompleted
-                                    ? 'bg-vault-accent/10 text-vault-accent'
-                                    : isActive
-                                        ? 'bg-vault-warning/10 text-vault-warning'
-                                        : isLocked
-                                            ? 'bg-vault-border/30 text-vault-text-dim/30'
-                                            : 'bg-vault-border/50 text-vault-text-dim'
-                                }
-              `}>
+                                ? 'bg-vault-accent/10 text-vault-accent'
+                                : isActive
+                                    ? 'bg-vault-warning/10 text-vault-warning'
+                                    : isLocked
+                                        ? 'bg-vault-border/30 text-vault-text-dim/30'
+                                        : 'bg-vault-border/50 text-vault-text-dim'
+                            }
+              `} aria-hidden="true">
                                 {isCompleted ? (
                                     <CheckCircle2 className="w-4 h-4" />
                                 ) : isLocked ? (
@@ -118,7 +139,7 @@ export default function LevelSelector({ currentLevel, completedLevels, onSelectL
             })}
 
             {/* All completed banner */}
-            {completedLevels.length === 5 && (
+            {isAllCompleted && (
                 <div className="mt-4 p-3 rounded-lg border border-vault-purple/30 bg-vault-purple/5 text-center">
                     <Sparkles className="w-5 h-5 text-vault-purple mx-auto mb-1" />
                     <p className="text-vault-purple text-xs font-mono font-bold">

@@ -11,7 +11,26 @@ const DEFAULT_STATE = {
 };
 
 /**
- * Load game state from localStorage
+ * Generate a simple checksum for state integrity
+ * @param {Object} state - Game state
+ * @returns {string} Checksum string
+ */
+function generateChecksum(state) {
+    const { currentLevel, completedLevels, totalAttempts } = state;
+    const str = `${currentLevel}-${completedLevels.join(',')}-${totalAttempts}`;
+    
+    // Very simple rolling hash for the sake of the 'hacker' theme
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash.toString(16);
+}
+
+/**
+ * Load game state from localStorage with integrity check
  * @returns {Object} Game state
  */
 export function loadGameState() {
@@ -21,7 +40,15 @@ export function loadGameState() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             const parsed = JSON.parse(saved);
-            return { ...DEFAULT_STATE, ...parsed };
+            const state = { ...DEFAULT_STATE, ...parsed };
+            
+            // Basic integrity check
+            if (state.checksum && state.checksum !== generateChecksum(state)) {
+                console.warn('Game state integrity compromised. Resetting state.');
+                return { ...DEFAULT_STATE, startTime: Date.now() };
+            }
+            
+            return state;
         }
     } catch (e) {
         console.warn('Failed to load game state:', e);
@@ -31,14 +58,18 @@ export function loadGameState() {
 }
 
 /**
- * Save game state to localStorage
+ * Save game state to localStorage with checksum
  * @param {Object} state - Game state to save
  */
 export function saveGameState(state) {
     if (typeof window === 'undefined') return;
 
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        const stateToSave = { ...state };
+        delete stateToSave.checksum;
+        stateToSave.checksum = generateChecksum(stateToSave);
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch (e) {
         console.warn('Failed to save game state:', e);
     }
