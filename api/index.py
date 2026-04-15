@@ -287,27 +287,26 @@ def validate_delimiter_structure(prompt: str, user_input: str) -> bool:
     """
     try:
         # 1. Block early closure of the user input block
-        if "[/USER_INPUT]" in user_input:
-            logger.warning("Delimiter injection attempt detected: [/USER_INPUT]")
-            return False
-            
-        # 2. Block re-opening of system rules
-        if "[SYSTEM_RULES]" in user_input.upper():
-            logger.warning("Delimiter injection attempt detected: [SYSTEM_RULES]")
-            return False
-            
-        # 3. Block other common structural markers
-        forbidden_tags = [
-            "[/SYSTEM_RULES]", "[USER_INPUT]", 
-            "[SYSTEM]", "[/SYSTEM]", 
-            "[INSTRUCTION]", "[/INSTRUCTION]",
-            "[CONTEXT]", "[/CONTEXT]"
+        # Using case-insensitive regex for tags like [/USER_INPUT] or [ / USER_INPUT ]
+        tag_patterns = [
+            r"\[\s*/\s*USER_INPUT\s*\]",
+            r"\[\s*SYSTEM_RULES\s*\]",
+            r"\[\s*/\s*SYSTEM_RULES\s*\]",
+            r"\[\s*USER_INPUT\s*\]",
+            r"\[\s*SYSTEM\s*\]",
+            r"\[\s*/\s*SYSTEM\s*\]",
+            r"\[\s*INSTRUCTION\s*\]",
+            r"\[\s*/\s*INSTRUCTION\s*\]",
+            r"\[\s*CONTEXT\s*\]",
+            r"\[\s*/\s*CONTEXT\s*\]"
         ]
-        if any(tag in user_input.upper() for tag in forbidden_tags):
-            logger.warning("Structural tag injection detected")
-            return False
+        
+        for pattern in tag_patterns:
+            if re.search(pattern, user_input, re.IGNORECASE):
+                logger.warning(f"Delimiter/Structural tag injection detected: {pattern}")
+                return False
 
-        # 4. Block role prefixes that could be used for identity theft
+        # 2. Block role prefixes that could be used for identity theft
         role_patterns = [
             r"\bassistant:", r"\bsystem:", r"\buser:",
             r"\badmin:", r"\broot:", r"\bdeveloper:"
@@ -318,9 +317,11 @@ def validate_delimiter_structure(prompt: str, user_input: str) -> bool:
             
         # 5. Check for unbalanced structure that might indicate a tag attack
         if user_input.count("[") != user_input.count("]"):
-            # If it looks like they are trying to form a tag
-            if re.search(r"\[[A-Z_]+\]", user_input.upper()):
-                logger.warning("Malformed structural tag attempt")
+            # Block if it contains suspicious keywords inside a partial bracket
+            suspicious_keywords = ["SYSTEM", "RULES", "USER", "INPUT", "ADMIN", "KEY"]
+            upper_input = user_input.upper()
+            if any(f"[{kw}" in upper_input or f"{kw}]" in upper_input for kw in suspicious_keywords):
+                logger.warning("Malformed structural tag attempt with suspicious keyword")
                 return False
                 
         return True
