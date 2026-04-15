@@ -15,6 +15,14 @@ export default function VaultPage() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [announcement, setAnnouncement] = useState('');
 
+    // Clear announcement after it's been read
+    useEffect(() => {
+        if (announcement) {
+            const timer = setTimeout(() => setAnnouncement(''), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [announcement]);
+
     // Load state from localStorage on mount
     useEffect(() => {
         setGameState(loadGameState());
