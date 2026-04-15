@@ -47,11 +47,13 @@ export default function LevelSelector({ currentLevel, completedLevels, onSelectL
                     aria-valuenow={completedLevels.length} 
                     aria-valuemin="0" 
                     aria-valuemax="5"
-                    aria-label="Progress: levels completed"
+                    aria-valuetext={`${completedLevels.length} of 5 levels breached`}
+                    aria-labelledby="clearance-heading"
                 >
                     <div
                         className="level-progress h-full rounded-full transition-all duration-700 ease-out"
                         style={{ width: `${progressPercent}%` }}
+                        aria-hidden="true"
                     />
                 </div>
                 <p className="text-xs text-vault-text-dim font-mono mb-4" aria-live="polite">
