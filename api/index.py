@@ -24,11 +24,19 @@ from difflib import SequenceMatcher
 
 @lru_cache(maxsize=1)
 def configure_gemini():
-    """Configure Google Gemini API"""
-    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    """Configure Google Gemini API with Project Context"""
+    api_key = os.environ.get("GEMINI_API_KEY")
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    
     if api_key:
         genai.configure(api_key=api_key)
+        if project_id:
+            logger.info(f"Gemini configured for Project: {project_id}")
+        else:
+            logger.info("Gemini configured via API Key.")
         return True
+    
+    logger.error("GEMINI_API_KEY missing from environment.")
     return False
 
 async def call_gemini(system_prompt: str, user_input: str, level: int):
