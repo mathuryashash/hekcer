@@ -1,8 +1,11 @@
 # 🔓 The Vault – Prompt Injection Learning Lab
 
 [![Security](https://img.shields.io/badge/Security-OWASP%20LLM01-red)](https://owasp.org/www-project-top-ten-for-large-language-model-applications/)
-[![Tech Stack](https://img.shields.io/badge/Stack-Next.js%20%7C%20FastAPI%20%7C%20Groq-blue)](https://nextjs.org/)
+[![Tech Stack](https://img.shields.io/badge/Stack-Next.js%20%7C%20FastAPI%20%7C%20Gemini-blue)](https://nextjs.org/)
 [![Accessibility](https://img.shields.io/badge/Accessibility-A%2B-green)](#accessibility)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-heckerhaibhai.vercel.app-00ff88?style=flat)](https://heckerhaibhai.vercel.app)
+
+> 🚀 **[Try it live → https://heckerhaibhai.vercel.app](https://heckerhaibhai.vercel.app)**
 
 **The Vault** is a gamified educational platform built for **Google's Prompt Wars**. It teaches developers and security researchers how to identify and mitigate prompt injection vulnerabilities in Large Language Models (LLMs) through a series of 5 progressively hardened security challenges.
 
