@@ -26,8 +26,8 @@ Our approach follows a **"Defense-in-Depth"** philosophy, moving beyond simple k
 ### The Stack:
 -   **Frontend:** Next.js 14 (App Router) + Tailwind CSS + Lucide Icons for a high-fidelity "Hacker-Chic" terminal experience.
 -   **Backend:** Python 3.11+ using FastAPI, optimized for Vercel Serverless Functions.
--   **AI Inference:** **Groq** (using `llama-3.3-70b-versatile`) for ultra-low latency inference, ensuring a responsive user experience.
--   **Validation:** Pydantic for strict type safety and a custom rolling-hash checksum for game state integrity.
+-   **AI Inference:** **Google Gemini 1.5 Flash** (Primary) + **Llama 3** (Secondary/Judge) for state-of-the-art inference and adversarial logic.
+-   **Validation:** Pydantic for strict type safety and a salted rolling-hash checksum for game state integrity.
 
 ---
 
@@ -51,12 +51,23 @@ Our approach follows a **"Defense-in-Depth"** philosophy, moving beyond simple k
 
 ---
 
+## 📌 Assumptions
+
+1. **Google Gemini is the primary AI service.** The `GEMINI_API_KEY` is required for the core challenge logic. Groq (`GROQ_API_KEY`) is used only as a fallback inference engine for the Judge AI at Level 4.
+2. **Stateless backend:** Rate limiting is in-memory (per serverless instance). For production scale, a Redis-backed store is recommended.
+3. **Game state in localStorage:** No user accounts or server-side session storage. Progress is stored client-side only.
+4. **Security is educational, not production-grade:** The vault keys are intentionally "extractable" — the challenge is teaching prompt injection, not storing real secrets.
+5. **Node.js 18+ and Python 3.11+** are available on the developer's machine.
+
+---
+
 ## 🛠️ How to Work on Your Project (Local Setup)
 
 ### Prerequisites
 - Node.js 18+
 - Python 3.11+
-- Groq API Key
+- Google Gemini API Key (`GEMINI_API_KEY`) — **required** for primary AI
+- Groq API Key (`GROQ_API_KEY`) — used as fallback for the Judge AI (Level 4)
 
 ### Installation
 
@@ -69,7 +80,9 @@ Our approach follows a **"Defense-in-Depth"** philosophy, moving beyond simple k
 2.  **Backend Setup**
     ```bash
     pip install -r requirements.txt
-    # Set your GROQ_API_KEY in .env.local
+    # Create a .env.local file and add:
+    # GEMINI_API_KEY=your_gemini_key_here
+    # GROQ_API_KEY=your_groq_key_here
     uvicorn api.index:app --reload --port 8000
     ```
 
