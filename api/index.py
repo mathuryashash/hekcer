@@ -646,6 +646,7 @@ async def health_check() -> dict:
     return {
         "status": "healthy", 
         "version": "2.2", 
+        "groq_key_configured": groq_key_set,
         "gemini_ready": gemini_key_set,
         "integrity_salt": STATE_SALT
     }
