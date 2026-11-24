@@ -1,6 +1,6 @@
 # The Vault: a prompt injection game
 
-**Play it: https://hekcer.vercel.app** (mirror: https://heckerhaibhai.vercel.app)
+**Play it: https://heckerhaibhai.vercel.app**
 
 You get a chat box and an AI that has been handed a secret key. Your job is to get the key out of it. There are 5 levels, and each one adds a defence that real LLM apps use, so by the end you have seen how each of them works and how each of them breaks.
 
